@@ -8,5 +8,5 @@
 [Oo]bj/
 
 # Ignoriši fajlove sa lozinkama (ako tu držiš connection string)
-appsettings.json
-appsettings.Development.json
+**/appsettings.json
+**/appsettings.Development.json

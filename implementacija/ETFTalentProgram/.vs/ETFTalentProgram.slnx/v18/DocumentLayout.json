@@ -3,6 +3,14 @@
   "WorkspaceRootPath": "C:\\Users\\VENOM\\Desktop\\OOAD\\Grupa1-Tim2\\implementacija\\ETFTalentProgram\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{C21781D7-106D-EA26-1E9F-B9A8C1218780}|ETFTalentProgram\\ETFTalentProgram.csproj|c:\\users\\venom\\desktop\\ooad\\grupa1-tim2\\implementacija\\etftalentprogram\\etftalentprogram\\appsettings.example.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{C21781D7-106D-EA26-1E9F-B9A8C1218780}|ETFTalentProgram\\ETFTalentProgram.csproj|solutionrelative:etftalentprogram\\appsettings.example.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C21781D7-106D-EA26-1E9F-B9A8C1218780}|ETFTalentProgram\\ETFTalentProgram.csproj|c:\\users\\venom\\desktop\\ooad\\grupa1-tim2\\implementacija\\etftalentprogram\\etftalentprogram\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{C21781D7-106D-EA26-1E9F-B9A8C1218780}|ETFTalentProgram\\ETFTalentProgram.csproj|solutionrelative:etftalentprogram\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{C21781D7-106D-EA26-1E9F-B9A8C1218780}|ETFTalentProgram\\ETFTalentProgram.csproj|c:\\users\\venom\\desktop\\ooad\\grupa1-tim2\\implementacija\\etftalentprogram\\etftalentprogram\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{C21781D7-106D-EA26-1E9F-B9A8C1218780}|ETFTalentProgram\\ETFTalentProgram.csproj|solutionrelative:etftalentprogram\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
@@ -75,19 +83,45 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "appsettings.Example.json",
+              "DocumentMoniker": "C:\\Users\\VENOM\\Desktop\\OOAD\\Grupa1-Tim2\\implementacija\\ETFTalentProgram\\ETFTalentProgram\\appsettings.Example.json",
+              "RelativeDocumentMoniker": "ETFTalentProgram\\appsettings.Example.json",
+              "ToolTip": "C:\\Users\\VENOM\\Desktop\\OOAD\\Grupa1-Tim2\\implementacija\\ETFTalentProgram\\ETFTalentProgram\\appsettings.Example.json",
+              "RelativeToolTip": "ETFTalentProgram\\appsettings.Example.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-05-03T23:12:28.934Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "appsettings.Development.json",
+              "DocumentMoniker": "C:\\Users\\VENOM\\Desktop\\OOAD\\Grupa1-Tim2\\implementacija\\ETFTalentProgram\\ETFTalentProgram\\appsettings.Development.json",
+              "RelativeDocumentMoniker": "ETFTalentProgram\\appsettings.Development.json",
+              "ToolTip": "C:\\Users\\VENOM\\Desktop\\OOAD\\Grupa1-Tim2\\implementacija\\ETFTalentProgram\\ETFTalentProgram\\appsettings.Development.json",
+              "RelativeToolTip": "ETFTalentProgram\\appsettings.Development.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-05-03T23:11:26.827Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\VENOM\\Desktop\\OOAD\\Grupa1-Tim2\\implementacija\\ETFTalentProgram\\ETFTalentProgram\\appsettings.json",
               "RelativeDocumentMoniker": "ETFTalentProgram\\appsettings.json",
               "ToolTip": "C:\\Users\\VENOM\\Desktop\\OOAD\\Grupa1-Tim2\\implementacija\\ETFTalentProgram\\ETFTalentProgram\\appsettings.json",
               "RelativeToolTip": "ETFTalentProgram\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
               "WhenOpened": "2026-05-03T21:40:37.489Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "ApplicationDbContext.cs",
               "DocumentMoniker": "C:\\Users\\VENOM\\Desktop\\OOAD\\Grupa1-Tim2\\implementacija\\ETFTalentProgram\\ETFTalentProgram\\Data\\ApplicationDbContext.cs",
               "RelativeDocumentMoniker": "ETFTalentProgram\\Data\\ApplicationDbContext.cs",
@@ -95,11 +129,12 @@
               "RelativeToolTip": "ETFTalentProgram\\Data\\ApplicationDbContext.cs",
               "ViewState": "AgIAACsAAAAAAAAAAAAQwC4AAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-03T21:39:42.087Z"
+              "WhenOpened": "2026-05-03T21:39:42.087Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "Verifikacija.cs",
               "DocumentMoniker": "C:\\Users\\VENOM\\Desktop\\OOAD\\Grupa1-Tim2\\implementacija\\ETFTalentProgram\\ETFTalentProgram\\Verifikacija.cs",
               "RelativeDocumentMoniker": "ETFTalentProgram\\Verifikacija.cs",
@@ -111,7 +146,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "Log.cs",
               "DocumentMoniker": "C:\\Users\\VENOM\\Desktop\\OOAD\\Grupa1-Tim2\\implementacija\\ETFTalentProgram\\ETFTalentProgram\\Log.cs",
               "RelativeDocumentMoniker": "ETFTalentProgram\\Log.cs",
@@ -123,7 +158,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "EmailNotifikacija.cs",
               "DocumentMoniker": "C:\\Users\\VENOM\\Desktop\\OOAD\\Grupa1-Tim2\\implementacija\\ETFTalentProgram\\ETFTalentProgram\\EmailNotifikacija.cs",
               "RelativeDocumentMoniker": "ETFTalentProgram\\EmailNotifikacija.cs",
@@ -135,7 +170,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
               "Title": "Ponuda.cs",
               "DocumentMoniker": "C:\\Users\\VENOM\\Desktop\\OOAD\\Grupa1-Tim2\\implementacija\\ETFTalentProgram\\ETFTalentProgram\\Ponuda.cs",
               "RelativeDocumentMoniker": "ETFTalentProgram\\Ponuda.cs",
@@ -147,7 +182,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 8,
               "Title": "PrijavaOglas.cs",
               "DocumentMoniker": "C:\\Users\\VENOM\\Desktop\\OOAD\\Grupa1-Tim2\\implementacija\\ETFTalentProgram\\ETFTalentProgram\\PrijavaOglas.cs",
               "RelativeDocumentMoniker": "ETFTalentProgram\\PrijavaOglas.cs",
@@ -159,7 +194,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 9,
               "Title": "Oglas.cs",
               "DocumentMoniker": "C:\\Users\\VENOM\\Desktop\\OOAD\\Grupa1-Tim2\\implementacija\\ETFTalentProgram\\ETFTalentProgram\\Oglas.cs",
               "RelativeDocumentMoniker": "ETFTalentProgram\\Oglas.cs",
@@ -171,7 +206,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 10,
               "Title": "StudentProfil.cs",
               "DocumentMoniker": "C:\\Users\\VENOM\\Desktop\\OOAD\\Grupa1-Tim2\\implementacija\\ETFTalentProgram\\ETFTalentProgram\\StudentProfil.cs",
               "RelativeDocumentMoniker": "ETFTalentProgram\\StudentProfil.cs",
@@ -183,7 +218,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 11,
               "Title": "Administrator.cs",
               "DocumentMoniker": "C:\\Users\\VENOM\\Desktop\\OOAD\\Grupa1-Tim2\\implementacija\\ETFTalentProgram\\ETFTalentProgram\\Administrator.cs",
               "RelativeDocumentMoniker": "ETFTalentProgram\\Administrator.cs",
@@ -195,7 +230,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 12,
               "Title": "Referent.cs",
               "DocumentMoniker": "C:\\Users\\VENOM\\Desktop\\OOAD\\Grupa1-Tim2\\implementacija\\ETFTalentProgram\\ETFTalentProgram\\Referent.cs",
               "RelativeDocumentMoniker": "ETFTalentProgram\\Referent.cs",
@@ -207,7 +242,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 13,
               "Title": "Firma.cs",
               "DocumentMoniker": "C:\\Users\\VENOM\\Desktop\\OOAD\\Grupa1-Tim2\\implementacija\\ETFTalentProgram\\ETFTalentProgram\\Firma.cs",
               "RelativeDocumentMoniker": "ETFTalentProgram\\Firma.cs",
@@ -219,7 +254,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 14,
               "Title": "Student.cs",
               "DocumentMoniker": "C:\\Users\\VENOM\\Desktop\\OOAD\\Grupa1-Tim2\\implementacija\\ETFTalentProgram\\ETFTalentProgram\\Student.cs",
               "RelativeDocumentMoniker": "ETFTalentProgram\\Student.cs",
@@ -231,7 +266,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 15,
               "Title": "Korisnik.cs",
               "DocumentMoniker": "C:\\Users\\VENOM\\Desktop\\OOAD\\Grupa1-Tim2\\implementacija\\ETFTalentProgram\\ETFTalentProgram\\Korisnik.cs",
               "RelativeDocumentMoniker": "ETFTalentProgram\\Korisnik.cs",
@@ -243,7 +278,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 16,
               "Title": "Enumeracije.cs",
               "DocumentMoniker": "C:\\Users\\VENOM\\Desktop\\OOAD\\Grupa1-Tim2\\implementacija\\ETFTalentProgram\\ETFTalentProgram\\Enumeracije.cs",
               "RelativeDocumentMoniker": "ETFTalentProgram\\Enumeracije.cs",

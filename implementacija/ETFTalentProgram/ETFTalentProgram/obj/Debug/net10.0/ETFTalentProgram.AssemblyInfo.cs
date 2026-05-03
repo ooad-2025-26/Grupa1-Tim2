@@ -16,7 +16,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ETFTalentProgram")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+91f9c13e1c311e2dbc5b658d39ffda8d2fe1a8c3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2ff694d2859c35c53798a9d5d527beb904b6c693")]
 [assembly: System.Reflection.AssemblyProductAttribute("ETFTalentProgram")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ETFTalentProgram")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
