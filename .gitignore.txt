@@ -1,0 +1,12 @@
+# Ignoriši Visual Studio foldere
+.vs/
+*.user
+*.suo
+
+# Ignoriši build foldere
+[Bb]in/
+[Oo]bj/
+
+# Ignoriši fajlove sa lozinkama (ako tu držiš connection string)
+appsettings.json
+appsettings.Development.json
