@@ -125,6 +125,8 @@ namespace ETFTalentProgram.Controllers
                 return NotFound();
             }
 
+            ModelState.Remove(nameof(StudentProfil.Student));
+
             if (!ModelState.IsValid)
             {
                 ViewData["StudentId"] = new SelectList(_context.Studenti, "Id", "Email", profil.StudentId);
