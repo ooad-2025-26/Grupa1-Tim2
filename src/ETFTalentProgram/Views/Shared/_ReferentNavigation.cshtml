@@ -1,0 +1,34 @@
+﻿@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+
+    var isKorisniciActive = currentController == "ReferentKorisnici";
+    var isVerifikacijaActive = currentController == "Verifikacija"
+        || currentController == "StudentProfil"
+        || currentController == "FirmaProfil";
+}
+
+<div class="mx-auto mb-4" style="max-width: 1040px;">
+    <div class="d-flex flex-column flex-md-row justify-content-between gap-3 my-4">
+        <div>
+            <p class="text-muted mb-1">ETF Talent Program</p>
+            <h1 class="fw-bold mb-0">Korisnici sistema</h1>
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs border-bottom" role="tablist">
+        <li class="nav-item" role="presentation">
+            <a class="nav-link @(isKorisniciActive ? "active" : "")"
+               href="@Url.Action("Index", "ReferentKorisnici")"
+               role="tab">
+                Korisnici sistema
+            </a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link @(isVerifikacijaActive ? "active" : "")"
+               href="@Url.Action("Index", "Verifikacija")"
+               role="tab">
+                Verifikacija profila
+            </a>
+        </li>
+    </ul>
+</div>

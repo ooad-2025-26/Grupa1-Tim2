@@ -4,8 +4,9 @@
     ViewData["Title"] = "Korisnici sistema";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h1>Korisnici sistema</h1>
+@await Html.PartialAsync("_ReferentNavigation")
+
+<div class="d-flex justify-content-end align-items-center mb-3">
     <a class="btn btn-primary" asp-action="Create">Kreiraj korisnika</a>
 </div>
 
