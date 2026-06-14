@@ -19,12 +19,14 @@ namespace ETFTalentProgram.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IStudentRangService _studentRangService;
         private readonly ILogService _logService;
+        private readonly IEmailService _emailService;
 
-        public FirmaController(ApplicationDbContext context, IStudentRangService studentRangService, ILogService logService)
+        public FirmaController(ApplicationDbContext context, IStudentRangService studentRangService, ILogService logService, IEmailService emailService)
         {
             _context = context;
             _studentRangService = studentRangService;
             _logService = logService;
+            _emailService = emailService;
         }
 
         // GET: Firma
@@ -120,9 +122,24 @@ namespace ETFTalentProgram.Controllers
                 TipPonude = TipPonude.FIRMA_STUDENTU
             });
 
+            await _emailService.PosaljiAsync(
+            student.Email,
+            "Ponuda za saradnju – ETF Talent Program",
+            $"""
+            <h2>Odabrani ste za saradnju sa firmom {firma.Naziv}!</h2>
+            <p>Poštovani/a {student.Ime},</p>
+            <p>firma {firma.Naziv} željela bi stupiti u kontakt s vama. Ponuda za posao/praksu je poslana kroz sistem. Firmu također možete direktno kontaktirati i putem sljedećeg emaila: {firma.KontaktEmail}</p>
+            <br>
+            <p>Sretno!</p>
+            <br>
+            <p>ETF Talent Program tim</p>
+            """,
+            firma.KontaktEmail
+        );
+
             await _context.SaveChangesAsync();
             await _logService.InfoAsync("STUDENT_KONTAKTIRAN", $"Firma ID {firma.Id} je kontaktirala studenta ID {student.Id} kroz ponudu.");
-            TempData["StatusMessage"] = "Student je kontaktiran kroz ponudu.";
+            TempData["StatusMessage"] = "Student je kontaktiran kroz ponudu. Email obavijest poslana.";
 
             return RedirectToAction(nameof(RangLista));
         }
