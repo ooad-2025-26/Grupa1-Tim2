@@ -51,6 +51,11 @@ namespace ETFTalentProgram.Services
                     profil.DatumAzuriranja = DateTime.UtcNow;
                 }
 
+                if (!student.Verificiran)
+                {
+                    continue;
+                }
+
                 rangLista.Add(new StudentRangViewModel
                 {
                     StudentId = student.Id,

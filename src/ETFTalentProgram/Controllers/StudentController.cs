@@ -70,6 +70,57 @@ namespace ETFTalentProgram.Controllers
             return View(prijave);
         }
 
+        // GET: Student/MojePonude
+        [Authorize(Roles = AppRoles.Student)]
+        public async Task<IActionResult> MojePonude()
+        {
+            var student = await GetOrCreateCurrentStudentAsync();
+            var ponude = await _context.Ponude
+                .Include(p => p.Posiljalac)
+                .Where(p => p.PrimalacId == student.Id)
+                .OrderByDescending(p => p.DatumSlanja)
+                .ToListAsync();
+
+            var posiljalacIds = ponude.Select(p => p.PosiljalacId).Distinct().ToList();
+            var firmeNazivi = await _context.Firme
+                .Where(f => posiljalacIds.Contains(f.Id))
+                .ToDictionaryAsync(f => f.Id, f => f.Naziv);
+
+            ViewData["FirmeNazivi"] = firmeNazivi;
+
+            await _logService.InfoAsync("STUDENT_PONUDE_PREGLEDANE", $"Student ID {student.Id} je pregledao svoje ponude. Broj ponuda: {ponude.Count}.");
+            return View(ponude);
+        }
+
+        // POST: Student/AzurirajStatusPonude/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = AppRoles.Student)]
+        public async Task<IActionResult> AzurirajStatusPonude(long id, StatusPonude status)
+        {
+            if (status != StatusPonude.PRIHVACENO && status != StatusPonude.ODBIJENO)
+            {
+                return BadRequest();
+            }
+
+            var student = await GetOrCreateCurrentStudentAsync();
+            var ponuda = await _context.Ponude
+                .FirstOrDefaultAsync(p => p.Id == id && p.PrimalacId == student.Id);
+
+            if (ponuda == null)
+            {
+                return NotFound();
+            }
+
+            ponuda.Status = status;
+            ponuda.DatumOdgovora = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+            await _logService.InfoAsync("STUDENT_PONUDA_STATUS_AZURIRAN", $"Student ID {student.Id} je postavio ponudu ID {ponuda.Id} na status {status}.");
+
+            return RedirectToAction(nameof(MojePonude));
+        }
+
         // GET: Student/RangLista
         [Authorize(Roles = $"{AppRoles.Student},{AppRoles.Firma}")]
         public async Task<IActionResult> RangLista()
