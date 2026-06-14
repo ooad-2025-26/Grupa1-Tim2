@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using ETFTalentProgram.Constants;
 using ETFTalentProgram.Data;
 using ETFTalentProgram.Models;
+using ETFTalentProgram.Services;
 
 namespace ETFTalentProgram.Controllers
 {
@@ -16,18 +17,41 @@ namespace ETFTalentProgram.Controllers
     public class LogController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogService _logService;
 
-        public LogController(ApplicationDbContext context)
+        public LogController(ApplicationDbContext context, ILogService logService)
         {
             _context = context;
+            _logService = logService;
         }
 
         // GET: Log
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? tipAkcije)
         {
-            return View(await _context.Logovi
+            var tipoviAkcija = await _context.Logovi
+                .Select(log => log.TipAkcije)
+                .Distinct()
+                .OrderBy(tip => tip)
+                .ToListAsync();
+
+            ViewData["TipoviAkcija"] = new SelectList(tipoviAkcija, tipAkcije);
+            ViewData["OdabraniTipAkcije"] = tipAkcije;
+
+            var query = _context.Logovi.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(tipAkcije))
+            {
+                query = query.Where(log => log.TipAkcije == tipAkcije);
+            }
+
+            var logovi = await query
                 .OrderByDescending(log => log.VrijemeAkcije)
-                .ToListAsync());
+                .ToListAsync();
+
+            var filterDetalji = string.IsNullOrWhiteSpace(tipAkcije)
+                ? "bez filtera"
+                : $"filter TipAkcije={tipAkcije}";
+            await _logService.InfoAsync("LOGOVI_PREGLEDANI", $"Administrator je pregledao listu logova ({filterDetalji}). Broj prikazanih logova: {logovi.Count}.");
+            return View(logovi);
         }
 
         // GET: Log/Details/5
@@ -45,6 +69,7 @@ namespace ETFTalentProgram.Controllers
                 return NotFound();
             }
 
+            await _logService.InfoAsync("LOG_DETALJI_PREGLEDANI", $"Administrator je pregledao detalje loga ID {log.Id}.");
             return View(log);
         }
 
@@ -65,6 +90,7 @@ namespace ETFTalentProgram.Controllers
             {
                 _context.Add(log);
                 await _context.SaveChangesAsync();
+                await _logService.InfoAsync("LOG_RUCNO_KREIRAN", $"Administrator je rucno kreirao log ID {log.Id}: {log.TipAkcije}.");
                 return RedirectToAction(nameof(Index));
             }
             return View(log);
@@ -104,6 +130,7 @@ namespace ETFTalentProgram.Controllers
                 {
                     _context.Update(log);
                     await _context.SaveChangesAsync();
+                    await _logService.WarningAsync("LOG_AZURIRAN", $"Administrator je azurirao log ID {log.Id}: {log.TipAkcije}.");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -148,6 +175,7 @@ namespace ETFTalentProgram.Controllers
             if (log != null)
             {
                 _context.Logovi.Remove(log);
+                await _logService.WarningAsync("LOG_OBRISAN", $"Administrator je obrisao log ID {log.Id}: {log.TipAkcije}.");
             }
 
             await _context.SaveChangesAsync();

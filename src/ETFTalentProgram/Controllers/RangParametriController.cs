@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ETFTalentProgram.Data;
 using ETFTalentProgram.Models;
+using ETFTalentProgram.Services;
 
 namespace ETFTalentProgram.Controllers
 {
     public class RangParametriController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogService _logService;
 
-        public RangParametriController(ApplicationDbContext context)
+        public RangParametriController(ApplicationDbContext context, ILogService logService)
         {
             _context = context;
+            _logService = logService;
         }
 
         // GET: RangParametri
@@ -60,6 +63,7 @@ namespace ETFTalentProgram.Controllers
             {
                 _context.Add(rangParametri);
                 await _context.SaveChangesAsync();
+                await _logService.InfoAsync("RANG_PARAMETRI_KREIRANI", $"Kreirani parametri rangiranja ID {rangParametri.Id}, verzija {rangParametri.Verzija}.");
                 return RedirectToAction(nameof(Index));
             }
             return View(rangParametri);
@@ -99,6 +103,7 @@ namespace ETFTalentProgram.Controllers
                 {
                     _context.Update(rangParametri);
                     await _context.SaveChangesAsync();
+                    await _logService.InfoAsync("RANG_PARAMETRI_AZURIRANI", $"Azurirani parametri rangiranja ID {rangParametri.Id}, verzija {rangParametri.Verzija}.");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -143,6 +148,7 @@ namespace ETFTalentProgram.Controllers
             if (rangParametri != null)
             {
                 _context.RangParametri.Remove(rangParametri);
+                await _logService.WarningAsync("RANG_PARAMETRI_OBRISANI", $"Obrisani parametri rangiranja ID {rangParametri.Id}, verzija {rangParametri.Verzija}.");
             }
 
             await _context.SaveChangesAsync();

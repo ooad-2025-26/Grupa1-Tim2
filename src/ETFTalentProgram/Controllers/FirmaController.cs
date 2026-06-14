@@ -49,6 +49,7 @@ namespace ETFTalentProgram.Controllers
                 BrojPrijava = await _context.PrijaveOglasa.CountAsync(p => p.Oglas.FirmaId == firma.Id)
             };
 
+            await _logService.InfoAsync("FIRMA_DASHBOARD_PREGLEDAN", $"Firma ID {firma.Id} je otvorila dashboard firme.");
             return View(model);
         }
 
@@ -68,6 +69,7 @@ namespace ETFTalentProgram.Controllers
                 .Select(g => new { OglasId = g.Key, Broj = g.Count() })
                 .ToDictionaryAsync(x => x.OglasId, x => x.Broj);
 
+            await _logService.InfoAsync("FIRMA_OGLASI_PREGLEDANI", $"Firma ID {firma.Id} je pregledala svoje oglase. Broj oglasa: {oglasi.Count}.");
             return View(oglasi);
         }
 
@@ -237,6 +239,7 @@ namespace ETFTalentProgram.Controllers
                 .Where(p => prijave.Select(x => x.StudentId).Contains(p.StudentId))
                 .ToDictionaryAsync(p => p.StudentId);
 
+            await _logService.InfoAsync("FIRMA_PRIJAVE_OGLASA_PREGLEDANE", $"Firma ID {firma.Id} je pregledala prijave za oglas ID {oglas.Id}. Broj prijava: {prijave.Count}.");
             return View(prijave);
         }
 
@@ -309,6 +312,7 @@ namespace ETFTalentProgram.Controllers
             {
                 _context.Add(firma);
                 await _context.SaveChangesAsync();
+                await _logService.InfoAsync("FIRMA_REFERENT_KREIRANA", $"Referent je kreirao firmu ID {firma.Id}: {firma.Email}.");
                 return RedirectToAction(nameof(Index));
             }
             return View(firma);
@@ -350,6 +354,7 @@ namespace ETFTalentProgram.Controllers
                 {
                     _context.Update(firma);
                     await _context.SaveChangesAsync();
+                    await _logService.InfoAsync("FIRMA_REFERENT_AZURIRANA", $"Referent je azurirao firmu ID {firma.Id}: {firma.Email}.");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -396,6 +401,7 @@ namespace ETFTalentProgram.Controllers
             if (firma != null)
             {
                 _context.Firme.Remove(firma);
+                await _logService.WarningAsync("FIRMA_REFERENT_OBRISANA", $"Referent je obrisao firmu ID {firma.Id}: {firma.Email}.");
             }
 
             await _context.SaveChangesAsync();

@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ETFTalentProgram.Data;
 using ETFTalentProgram.Models;
+using ETFTalentProgram.Services;
 
 namespace ETFTalentProgram.Controllers
 {
     public class AkademskiPodatakController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogService _logService;
 
-        public AkademskiPodatakController(ApplicationDbContext context)
+        public AkademskiPodatakController(ApplicationDbContext context, ILogService logService)
         {
             _context = context;
+            _logService = logService;
         }
 
         // GET: AkademskiPodatak
@@ -63,6 +66,7 @@ namespace ETFTalentProgram.Controllers
             {
                 _context.Add(akademskiPodatak);
                 await _context.SaveChangesAsync();
+                await _logService.InfoAsync("AKADEMSKI_PODATAK_KREIRAN", $"Kreiran akademski podatak ID {akademskiPodatak.Id} za studenta ID {akademskiPodatak.StudentId}.");
                 return RedirectToAction(nameof(Index));
             }
             ViewData["StudentId"] = new SelectList(_context.Studenti, "Id", "Id", akademskiPodatak.StudentId);
@@ -104,6 +108,7 @@ namespace ETFTalentProgram.Controllers
                 {
                     _context.Update(akademskiPodatak);
                     await _context.SaveChangesAsync();
+                    await _logService.InfoAsync("AKADEMSKI_PODATAK_AZURIRAN", $"Azuriran akademski podatak ID {akademskiPodatak.Id} za studenta ID {akademskiPodatak.StudentId}.");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -150,6 +155,7 @@ namespace ETFTalentProgram.Controllers
             if (akademskiPodatak != null)
             {
                 _context.AkademskiPodaci.Remove(akademskiPodatak);
+                await _logService.WarningAsync("AKADEMSKI_PODATAK_OBRISAN", $"Obrisan akademski podatak ID {akademskiPodatak.Id} za studenta ID {akademskiPodatak.StudentId}.");
             }
 
             await _context.SaveChangesAsync();

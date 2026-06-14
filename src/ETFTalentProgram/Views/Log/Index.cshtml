@@ -2,9 +2,46 @@
 
 @{
     ViewData["Title"] = "Pregled logova";
+
+    static TimeZoneInfo GetSarajevoTimeZone()
+    {
+        try
+        {
+            return TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
+        }
+        catch (TimeZoneNotFoundException)
+        {
+            return TimeZoneInfo.FindSystemTimeZoneById("Europe/Sarajevo");
+        }
+    }
+
+    var sarajevoTimeZone = GetSarajevoTimeZone();
+
+    string FormatLocalTime(DateTime value)
+    {
+        var utcValue = value.Kind == DateTimeKind.Utc
+            ? value
+            : DateTime.SpecifyKind(value, DateTimeKind.Utc);
+        return TimeZoneInfo.ConvertTimeFromUtc(utcValue, sarajevoTimeZone).ToString("dd.MM.yyyy HH:mm:ss");
+    }
 }
 
 <h1>Pregled logova</h1>
+
+<form asp-action="Index" method="get" class="row gy-2 gx-2 align-items-end mb-3">
+    <div class="col-sm-6 col-md-4">
+        <label for="tipAkcije" class="form-label">Tip akcije</label>
+        <select id="tipAkcije" name="tipAkcije" class="form-select" asp-items="ViewBag.TipoviAkcija">
+            <option value="">Svi logovi</option>
+        </select>
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Filtriraj</button>
+    </div>
+    <div class="col-auto">
+        <a asp-action="Index" class="btn btn-outline-secondary">Resetuj</a>
+    </div>
+</form>
 
 <table class="table">
     <thead>
@@ -17,9 +54,6 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.KorisnikId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IpAdresa)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Detalji)
@@ -37,13 +71,10 @@
                 @Html.DisplayFor(modelItem => item.TipAkcije)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.VrijemeAkcije)
+                @FormatLocalTime(item.VrijemeAkcije)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.KorisnikId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IpAdresa)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Detalji)

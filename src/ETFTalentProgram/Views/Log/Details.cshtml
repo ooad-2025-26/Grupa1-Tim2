@@ -2,6 +2,24 @@
 
 @{
     ViewData["Title"] = "Detalji loga";
+
+    static TimeZoneInfo GetSarajevoTimeZone()
+    {
+        try
+        {
+            return TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
+        }
+        catch (TimeZoneNotFoundException)
+        {
+            return TimeZoneInfo.FindSystemTimeZoneById("Europe/Sarajevo");
+        }
+    }
+
+    var sarajevoTimeZone = GetSarajevoTimeZone();
+    var utcVrijeme = Model.VrijemeAkcije.Kind == DateTimeKind.Utc
+        ? Model.VrijemeAkcije
+        : DateTime.SpecifyKind(Model.VrijemeAkcije, DateTimeKind.Utc);
+    var lokalnoVrijeme = TimeZoneInfo.ConvertTimeFromUtc(utcVrijeme, sarajevoTimeZone);
 }
 
 <h1>Detalji loga</h1>
@@ -20,19 +38,13 @@
             @Html.DisplayNameFor(model => model.VrijemeAkcije)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.VrijemeAkcije)
+            @lokalnoVrijeme.ToString("dd.MM.yyyy HH:mm:ss")
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.KorisnikId)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.KorisnikId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IpAdresa)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IpAdresa)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Detalji)
