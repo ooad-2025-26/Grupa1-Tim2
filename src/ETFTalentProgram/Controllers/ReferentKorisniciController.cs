@@ -1,4 +1,5 @@
 using ETFTalentProgram.Constants;
+using ETFTalentProgram.Data;
 using ETFTalentProgram.Models;
 using ETFTalentProgram.Services;
 using ETFTalentProgram.ViewModels;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace ETFTalentProgram.Controllers
 {
@@ -20,11 +22,16 @@ namespace ETFTalentProgram.Controllers
             AppRoles.Administrator
         ];
 
+        private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogService _logService;
 
-        public ReferentKorisniciController(UserManager<ApplicationUser> userManager, ILogService logService)
+        public ReferentKorisniciController(
+      ApplicationDbContext context,
+      UserManager<ApplicationUser> userManager,
+      ILogService logService)
         {
+            _context = context;
             _userManager = userManager;
             _logService = logService;
         }
@@ -215,6 +222,7 @@ namespace ETFTalentProgram.Controllers
             }
 
             var email = user.Email ?? user.UserName ?? user.Id;
+            await MarkDomainUserStatusAsync(email, Status.OBRISAN);
             var result = await _userManager.DeleteAsync(user);
             if (!result.Succeeded)
             {
@@ -228,10 +236,52 @@ namespace ETFTalentProgram.Controllers
                     DatumZadnjePrijave = user.DatumZadnjePrijave
                 });
             }
-
             await _logService.WarningAsync("KORISNIK_OBRISAN", $"Referent je obrisao korisnika {email}.");
             return RedirectToAction(nameof(Index));
         }
+
+        private async Task MarkDomainUserStatusAsync(string email, Status status)
+        {
+            var studenti = await _context.Studenti
+                .Where(s => s.Email == email)
+                .ToListAsync();
+
+            foreach (var student in studenti)
+            {
+                student.Status = status;
+                student.Verificiran = false;
+            }
+
+            var firme = await _context.Firme
+                .Where(f => f.Email == email)
+                .ToListAsync();
+
+            foreach (var firma in firme)
+            {
+                firma.Status = status;
+            }
+
+            var referenti = await _context.Referenti
+                .Where(r => r.Email == email)
+                .ToListAsync();
+
+            foreach (var referent in referenti)
+            {
+                referent.Status = status;
+            }
+
+            var administratori = await _context.Administratori
+                .Where(a => a.Email == email)
+                .ToListAsync();
+
+            foreach (var administrator in administratori)
+            {
+                administrator.Status = status;
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
 
         private void PopulateRoles(string? selectedRole = null)
         {

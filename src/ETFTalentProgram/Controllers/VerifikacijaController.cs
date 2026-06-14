@@ -37,6 +37,7 @@ namespace ETFTalentProgram.Controllers
             {
                 StudentProfili = await _context.StudentProfili
                     .Include(p => p.Student)
+                    .Where(p => p.Student.Status == Status.AKTIVAN)
                     .OrderBy(p => p.StatusVerifikacije)
                     .ThenByDescending(p => p.DatumAzuriranja)
                     .Select(p => new StudentProfilVerifikacijaViewModel
@@ -53,6 +54,7 @@ namespace ETFTalentProgram.Controllers
                     .ToListAsync(),
                 FirmaProfili = await _context.FirmaProfili
                     .Include(p => p.Firma)
+                    .Where(p => p.Firma.Status == Status.AKTIVAN)
                     .OrderBy(p => p.StatusVerifikacije)
                     .ThenByDescending(p => p.DatumAzuriranja)
                     .Select(p => new FirmaProfilVerifikacijaViewModel
