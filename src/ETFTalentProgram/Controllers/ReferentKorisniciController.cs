@@ -153,18 +153,25 @@ namespace ETFTalentProgram.Controllers
                 return NotFound();
             }
 
+            var existingRoles = await _userManager.GetRolesAsync(user);
+            var currentRole = existingRoles.FirstOrDefault();
+
+            if (!string.Equals(currentRole, model.Role, StringComparison.OrdinalIgnoreCase)
+                && await HasActiveDomainProfileAsync(user.Email ?? user.UserName ?? string.Empty))
+            {
+                ModelState.AddModelError(nameof(model.Role), "Uloga se ne može promijeniti jer korisnik već ima povezan profil.");
+                PopulateRoles(currentRole ?? model.Role);
+                return View(model);
+            }
+
             user.Email = model.Email;
             user.UserName = model.Email;
             user.EmailConfirmed = model.EmailConfirmed;
 
             var result = await _userManager.UpdateAsync(user);
-            if (result.Succeeded)
+            if (result.Succeeded && existingRoles.Any())
             {
-                var existingRoles = await _userManager.GetRolesAsync(user);
-                if (existingRoles.Any())
-                {
-                    result = await _userManager.RemoveFromRolesAsync(user, existingRoles);
-                }
+                result = await _userManager.RemoveFromRolesAsync(user, existingRoles);
             }
 
             if (result.Succeeded)
@@ -220,6 +227,8 @@ namespace ETFTalentProgram.Controllers
             {
                 return NotFound();
             }
+
+
 
             var email = user.Email ?? user.UserName ?? user.Id;
             await MarkDomainUserStatusAsync(email, Status.OBRISAN);
@@ -282,6 +291,18 @@ namespace ETFTalentProgram.Controllers
             await _context.SaveChangesAsync();
         }
 
+        private async Task<bool> HasActiveDomainProfileAsync(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return false;
+            }
+
+            return await _context.Studenti.AnyAsync(s => s.Email == email && s.Status == Status.AKTIVAN)
+                || await _context.Firme.AnyAsync(f => f.Email == email && f.Status == Status.AKTIVAN)
+                || await _context.Referenti.AnyAsync(r => r.Email == email && r.Status == Status.AKTIVAN)
+                || await _context.Administratori.AnyAsync(a => a.Email == email && a.Status == Status.AKTIVAN);
+        }
 
         private void PopulateRoles(string? selectedRole = null)
         {
