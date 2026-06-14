@@ -50,6 +50,7 @@ namespace ETFTalentProgram.Controllers
                 BrojProjekata = CountProjectItems(profil.Projekti)
             };
 
+            await _logService.InfoAsync("STUDENT_DASHBOARD_PREGLEDAN", $"Student ID {student.Id} je otvorio studentski dashboard.");
             return View(model);
         }
 
@@ -65,6 +66,7 @@ namespace ETFTalentProgram.Controllers
                 .OrderByDescending(p => p.DatumPrijave)
                 .ToListAsync();
 
+            await _logService.InfoAsync("STUDENT_PRIJAVE_PREGLEDANE", $"Student ID {student.Id} je pregledao svoje prijave. Broj prijava: {prijave.Count}.");
             return View(prijave);
         }
 
@@ -115,6 +117,7 @@ namespace ETFTalentProgram.Controllers
             {
                 _context.Add(student);
                 await _context.SaveChangesAsync();
+                await _logService.InfoAsync("STUDENT_REFERENT_KREIRAN", $"Referent je kreirao studenta ID {student.Id}: {student.Email}.");
                 return RedirectToAction(nameof(Index));
             }
             return View(student);
@@ -156,6 +159,7 @@ namespace ETFTalentProgram.Controllers
                 {
                     _context.Update(student);
                     await _context.SaveChangesAsync();
+                    await _logService.InfoAsync("STUDENT_REFERENT_AZURIRAN", $"Referent je azurirao studenta ID {student.Id}: {student.Email}.");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -202,6 +206,7 @@ namespace ETFTalentProgram.Controllers
             if (student != null)
             {
                 _context.Studenti.Remove(student);
+                await _logService.WarningAsync("STUDENT_REFERENT_OBRISAN", $"Referent je obrisao studenta ID {student.Id}: {student.Email}.");
             }
 
             await _context.SaveChangesAsync();

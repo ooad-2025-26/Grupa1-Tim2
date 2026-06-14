@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ETFTalentProgram.Data;
 using ETFTalentProgram.Models;
+using ETFTalentProgram.Services;
 
 namespace ETFTalentProgram.Controllers
 {
     public class AdministratorController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogService _logService;
 
-        public AdministratorController(ApplicationDbContext context)
+        public AdministratorController(ApplicationDbContext context, ILogService logService)
         {
             _context = context;
+            _logService = logService;
         }
 
         // GET: Administrator
@@ -60,6 +63,7 @@ namespace ETFTalentProgram.Controllers
             {
                 _context.Add(administrator);
                 await _context.SaveChangesAsync();
+                await _logService.InfoAsync("ADMINISTRATOR_KREIRAN", $"Kreiran administrator ID {administrator.Id}: {administrator.Email}.");
                 return RedirectToAction(nameof(Index));
             }
             return View(administrator);
@@ -99,6 +103,7 @@ namespace ETFTalentProgram.Controllers
                 {
                     _context.Update(administrator);
                     await _context.SaveChangesAsync();
+                    await _logService.InfoAsync("ADMINISTRATOR_AZURIRAN", $"Azuriran administrator ID {administrator.Id}: {administrator.Email}.");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -143,6 +148,7 @@ namespace ETFTalentProgram.Controllers
             if (administrator != null)
             {
                 _context.Administratori.Remove(administrator);
+                await _logService.WarningAsync("ADMINISTRATOR_OBRISAN", $"Obrisan administrator ID {administrator.Id}: {administrator.Email}.");
             }
 
             await _context.SaveChangesAsync();

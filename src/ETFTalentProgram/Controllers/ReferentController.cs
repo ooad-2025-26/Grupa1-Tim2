@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ETFTalentProgram.Data;
 using ETFTalentProgram.Models;
+using ETFTalentProgram.Services;
 
 namespace ETFTalentProgram.Controllers
 {
     public class ReferentController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogService _logService;
 
-        public ReferentController(ApplicationDbContext context)
+        public ReferentController(ApplicationDbContext context, ILogService logService)
         {
             _context = context;
+            _logService = logService;
         }
 
         // GET: Referent
@@ -60,6 +63,7 @@ namespace ETFTalentProgram.Controllers
             {
                 _context.Add(referent);
                 await _context.SaveChangesAsync();
+                await _logService.InfoAsync("REFERENT_KREIRAN", $"Kreiran referent ID {referent.Id}: {referent.Email}.");
                 return RedirectToAction(nameof(Index));
             }
             return View(referent);
@@ -99,6 +103,7 @@ namespace ETFTalentProgram.Controllers
                 {
                     _context.Update(referent);
                     await _context.SaveChangesAsync();
+                    await _logService.InfoAsync("REFERENT_AZURIRAN", $"Azuriran referent ID {referent.Id}: {referent.Email}.");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -143,6 +148,7 @@ namespace ETFTalentProgram.Controllers
             if (referent != null)
             {
                 _context.Referenti.Remove(referent);
+                await _logService.WarningAsync("REFERENT_OBRISAN", $"Obrisan referent ID {referent.Id}: {referent.Email}.");
             }
 
             await _context.SaveChangesAsync();
