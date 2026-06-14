@@ -116,11 +116,14 @@ namespace ETFTalentProgram.Controllers
             return View(firmaProfil);
         }
 
-        // POST: FirmaProfil/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([Bind("Id,KratakOpis,PunOpis,Lokacija,Website,KontaktEmail,Logotip,TehnologijeStack,DatumAzuriranja,FirmaId,StatusVerifikacije")] FirmaProfil firmaProfil)
         {
+            // FIX 1: Ignorišemo validaciju za Logotip i navigacijsku osobinu Firma
+            ModelState.Remove("Logotip");
+            ModelState.Remove("Firma");
+
             if (ModelState.IsValid)
             {
                 try
@@ -152,6 +155,7 @@ namespace ETFTalentProgram.Controllers
                     }
                     else
                     {
+                        // FIX 2: Ako izmjenu vrši firma, status MORA ići na čekanje
                         existingProfil.StatusVerifikacije = StatusVerifikacije.NA_CEKANJU;
                     }
 
@@ -164,7 +168,8 @@ namespace ETFTalentProgram.Controllers
                         return RedirectToAction("Index", "Verifikacija");
                     }
 
-                    return RedirectToAction(nameof(Edit));
+                    // FIX 3: Redirekcija na Dashboard firme umjesto nazad na Edit formu
+                    return RedirectToAction("Index", "Firma");
                 }
                 catch (DbUpdateConcurrencyException)
                 {

@@ -446,13 +446,17 @@ namespace ETFTalentProgram.Controllers
         [ValidateAntiForgeryToken]
         [Authorize(Roles = AppRoles.Firma)]
         public async Task<IActionResult> Profil_firme(
-            [Bind("Id,KratakOpis,PunOpis,Lokacija,Website,KontaktEmail,Logotip,TehnologijeStack,DatumAzuriranja,FirmaId")] FirmaProfil firmaProfil,
-            string naziv,
-            string opisFirme,
-            string industrijskiSektor,
-            VelicinaFirme velicinaFirme,
-            int godinaOsnivanja)
+    [Bind("Id,KratakOpis,PunOpis,Lokacija,Website,KontaktEmail,Logotip,TehnologijeStack,DatumAzuriranja,FirmaId")] FirmaProfil firmaProfil,
+    string naziv,
+    string opisFirme,
+    string industrijskiSektor,
+    VelicinaFirme velicinaFirme,
+    int godinaOsnivanja)
         {
+            // FIX 1: Uklanjamo Logotip iz validacije da nas ne blokira ako je prazan
+            ModelState.Remove("Logotip");
+            ModelState.Remove(nameof(firmaProfil.Firma));
+
             if (ModelState.IsValid)
             {
                 try
@@ -464,6 +468,7 @@ namespace ETFTalentProgram.Controllers
                         return Forbid();
                     }
 
+                    // Ažuriranje podataka osnovne tabele Firma
                     firma.Naziv = NormalizeText(naziv);
                     firma.OpisFirme = NormalizeText(opisFirme);
                     firma.Lokacija = NormalizeText(firmaProfil.Lokacija);
@@ -473,6 +478,7 @@ namespace ETFTalentProgram.Controllers
                     firma.VelicinaFirme = velicinaFirme;
                     firma.GodinaOsnivanja = godinaOsnivanja <= 0 ? DateTime.Today.Year : godinaOsnivanja;
 
+                    // Ažuriranje podataka u FirmaProfil
                     existingProfil.KratakOpis = firmaProfil.KratakOpis;
                     existingProfil.PunOpis = firmaProfil.PunOpis;
                     existingProfil.Lokacija = firmaProfil.Lokacija;
@@ -481,11 +487,18 @@ namespace ETFTalentProgram.Controllers
                     existingProfil.Logotip = firmaProfil.Logotip;
                     existingProfil.TehnologijeStack = firmaProfil.TehnologijeStack;
                     existingProfil.DatumAzuriranja = DateTime.UtcNow;
+
+                    // FIX 2: Automatski postavljamo status na NA_CEKANJU čim se desi izmjena
                     existingProfil.StatusVerifikacije = StatusVerifikacije.NA_CEKANJU;
+
                     await _context.SaveChangesAsync();
                     await _logService.InfoAsync("FIRMA_PROFIL_AZURIRAN", $"Firma ID {firma.Id} je azurirala profil firme i poslala ga na ponovnu verifikaciju.");
+
                     TempData["StatusMessage"] = "Profil firme je uspješno ažuriran i poslan na ponovnu verifikaciju.";
-                    return RedirectToAction(nameof(Profil_firme));
+
+                    // FIX 3: Redirekcija na Index (Dashboard) umjesto na Profil_firme (Edit prozor)
+                    // Tako ćeš odmah na početnoj strani vidjeti promjenu podataka i žuti status "Na čekanju"
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
