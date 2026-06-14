@@ -5,6 +5,7 @@
     var isDashboardActive = currentController == "Student" && currentAction == "Index";
     var isProfilActive = currentController == "StudentProfil" && currentAction == "Index";
     var isPrijaveActive = currentController == "Student" && currentAction == "MojePrijave";
+    var isPonudeActive = currentController == "Student" && currentAction == "MojePonude";
     var isOglasiActive = currentController == "Oglas" && currentAction == "Index";
     var isRangActive = currentController == "Student" && currentAction == "RangLista";
 }
@@ -37,6 +38,13 @@
                href="@Url.Action("MojePrijave", "Student")"
                role="tab">
                 Moje prijave
+            </a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link @(isPonudeActive ? "active" : "")"
+               href="@Url.Action("MojePonude", "Student")"
+               role="tab">
+                Moje ponude
             </a>
         </li>
         <li class="nav-item" role="presentation">

@@ -190,6 +190,7 @@ namespace ETFTalentProgram.Controllers
                 .ToHashSet();
 
             var filtered = profili
+                .Where(p => p.Student != null && p.Student.Verificiran)
                 .Where(p => string.IsNullOrEmpty(normalizedQuery)
                     || (p.Student != null && $"{p.Student.Ime} {p.Student.Prezime}".ToLowerInvariant().Contains(normalizedQuery))
                     || (p.Vjestine ?? string.Empty).ToLowerInvariant().Contains(normalizedQuery)

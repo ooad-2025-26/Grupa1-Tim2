@@ -1,0 +1,129 @@
+@model IReadOnlyList<ETFTalentProgram.Models.Ponuda>
+
+@{
+    ViewData["Title"] = "Moje ponude";
+    var firmeNazivi = ViewData["FirmeNazivi"] as Dictionary<long, string> ?? new Dictionary<long, string>();
+
+    var ukupno = Model.Count;
+    var poslane = Model.Count(p => p.Status == ETFTalentProgram.Models.StatusPonude.POSLANO || p.Status == ETFTalentProgram.Models.StatusPonude.NA_CEKANJU);
+    var prihvacene = Model.Count(p => p.Status == ETFTalentProgram.Models.StatusPonude.PRIHVACENO);
+}
+
+@await Html.PartialAsync("_StudentNavigation")
+
+<div class="mx-auto mb-5" style="max-width: 1040px;">
+    <section class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Moje ponude</h2>
+            <p class="text-muted mb-0">Pregled ponuda koje su vam poslale firme putem ETF Talent Programa.</p>
+        </div>
+        <a class="btn btn-primary" asp-controller="Oglas" asp-action="Index">Pregledaj oglase</a>
+    </section>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="text-muted small">Ukupno ponuda</div>
+                    <div class="h3 mb-0">@ukupno</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="text-muted small">U obradi</div>
+                    <div class="h3 mb-0">@poslane</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="text-muted small">Prihvacene</div>
+                    <div class="h3 mb-0">@prihvacene</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            @if (!Model.Any())
+            {
+                <div class="p-4 p-lg-5 text-center">
+                    <h3 class="h5 fw-bold">Jos nemate ponuda</h3>
+                    <p class="text-muted mx-auto" style="max-width: 520px;">Kada vam firma posalje ponudu za saradnju, ovdje ce biti prikazan naziv firme, poruka, status i datum slanja.</p>
+                    <a class="btn btn-outline-primary" asp-controller="StudentProfil" asp-action="Index">Azurirajte profil</a>
+                </div>
+            }
+            else
+            {
+                <div class="list-group list-group-flush">
+                    @foreach (var ponuda in Model)
+                    {
+                        var firmaNaziv = firmeNazivi.TryGetValue(ponuda.PosiljalacId, out var naziv) && !string.IsNullOrWhiteSpace(naziv)
+                            ? naziv
+                            : ponuda.Posiljalac?.Email ?? "Firma";
+                        var statusLabel = ponuda.Status switch
+                        {
+                            ETFTalentProgram.Models.StatusPonude.PRIHVACENO => "Accepted",
+                            ETFTalentProgram.Models.StatusPonude.ODBIJENO => "Rejected",
+                            ETFTalentProgram.Models.StatusPonude.NA_CEKANJU => "Na cekanju",
+                            _ => "Poslano"
+                        };
+                        var badgeClass = ponuda.Status switch
+                        {
+                            ETFTalentProgram.Models.StatusPonude.PRIHVACENO => "text-bg-success",
+                            ETFTalentProgram.Models.StatusPonude.ODBIJENO => "text-bg-danger",
+                            ETFTalentProgram.Models.StatusPonude.NA_CEKANJU => "text-bg-info",
+                            _ => "text-bg-secondary"
+                        };
+                        var mozeOdgovoriti = ponuda.Status == ETFTalentProgram.Models.StatusPonude.POSLANO
+                            || ponuda.Status == ETFTalentProgram.Models.StatusPonude.NA_CEKANJU;
+
+                        <article class="list-group-item p-4">
+                            <div class="d-flex flex-column flex-lg-row justify-content-between gap-3">
+                                <div>
+                                    <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                                        <h3 class="h5 fw-bold mb-0">@firmaNaziv</h3>
+                                        <span class="badge @badgeClass">@statusLabel</span>
+                                        <span class="badge text-bg-light border">@ponuda.TipPonude</span>
+                                    </div>
+                                    @if (!string.IsNullOrWhiteSpace(ponuda.TekstPoruke))
+                                    {
+                                        <p class="mb-0">@ponuda.TekstPoruke</p>
+                                    }
+                                </div>
+                                <div class="text-lg-end flex-shrink-0">
+                                    <div class="text-muted small">Datum slanja</div>
+                                    <div class="fw-semibold">@ponuda.DatumSlanja.ToString("dd.MM.yyyy")</div>
+                                    @if (ponuda.DatumOdgovora.HasValue)
+                                    {
+                                        <div class="text-muted small mt-2">Datum odgovora</div>
+                                        <div class="fw-semibold">@ponuda.DatumOdgovora.Value.ToString("dd.MM.yyyy")</div>
+                                    }
+                                    @if (mozeOdgovoriti)
+                                    {
+                                        <div class="d-flex justify-content-lg-end gap-2 mt-3">
+                                            <form asp-action="AzurirajStatusPonude" asp-route-id="@ponuda.Id" method="post">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="status" value="@ETFTalentProgram.Models.StatusPonude.PRIHVACENO" />
+                                                <button type="submit" class="btn btn-success btn-sm">Prihvati</button>
+                                            </form>
+                                            <form asp-action="AzurirajStatusPonude" asp-route-id="@ponuda.Id" method="post">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="status" value="@ETFTalentProgram.Models.StatusPonude.ODBIJENO" />
+                                                <button type="submit" class="btn btn-danger btn-sm">Odbij</button>
+                                            </form>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </article>
+                    }
+                </div>
+            }
+        </div>
+    </section>
+</div>

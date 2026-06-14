@@ -1,13 +1,86 @@
-﻿@using ETFTalentProgram.Models
+﻿@using ETFTalentProgram.Constants
+@using ETFTalentProgram.Data
+@using ETFTalentProgram.Models
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext DbContext
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-<ul class="navbar-nav">
+<ul class="navbar-nav align-items-sm-center gap-sm-2">
 @if (SignInManager.IsSignedIn(User))
 {
+    var email = User.Identity?.Name ?? string.Empty;
+    var displayName = email;
+    var roleStatus = "Korisnik";
+
+    if (User.IsInRole(AppRoles.Student))
+    {
+        var student = await DbContext.Studenti.AsNoTracking().FirstOrDefaultAsync(s => s.Email == email);
+        if (student != null)
+        {
+            displayName = BuildDisplayName(student.Ime, student.Prezime, email);
+            roleStatus = $"Student - {student.GodinaStudija}. godina";
+        }
+        else
+        {
+            roleStatus = AppRoles.Student;
+        }
+    }
+    else if (User.IsInRole(AppRoles.Firma))
+    {
+        var firma = await DbContext.Firme.AsNoTracking().FirstOrDefaultAsync(f => f.Email == email);
+        if (firma != null)
+        {
+            displayName = string.IsNullOrWhiteSpace(firma.Naziv) ? email : firma.Naziv;
+            roleStatus = $"Firma - {firma.Status}";
+        }
+        else
+        {
+            roleStatus = AppRoles.Firma;
+        }
+    }
+    else if (User.IsInRole(AppRoles.Referent))
+    {
+        var referent = await DbContext.Referenti.AsNoTracking().FirstOrDefaultAsync(r => r.Email == email);
+        if (referent != null)
+        {
+            displayName = BuildDisplayName(referent.Ime, referent.Prezime, email);
+            roleStatus = string.IsNullOrWhiteSpace(referent.Odsjek) ? AppRoles.Referent : $"{AppRoles.Referent} - {referent.Odsjek}";
+        }
+        else
+        {
+            roleStatus = AppRoles.Referent;
+        }
+    }
+    else if (User.IsInRole(AppRoles.Administrator))
+    {
+        var administrator = await DbContext.Administratori.AsNoTracking().FirstOrDefaultAsync(a => a.Email == email);
+        if (administrator != null)
+        {
+            displayName = BuildDisplayName(administrator.Ime, administrator.Prezime, email);
+            roleStatus = $"{AppRoles.Administrator} - nivo {administrator.NivoOvlastenja}";
+        }
+        else
+        {
+            roleStatus = AppRoles.Administrator;
+        }
+    }
+
+    var initials = BuildInitials(displayName, email);
+
     <li class="nav-item">
-        <span class="nav-link text-dark">Pozdrav, @User.Identity?.Name!</span>
+        <div class="d-flex align-items-center gap-2 px-sm-2 py-2 py-sm-0">
+            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-semibold flex-shrink-0"
+                 style="width: 40px; height: 40px;"
+                 aria-hidden="true">
+                @initials
+            </div>
+            <div class="lh-sm">
+                <div class="fw-semibold text-dark">@displayName</div>
+                <div class="small text-muted">@roleStatus</div>
+            </div>
+        </div>
     </li>
     <li class="nav-item">
         <form class="form-inline" asp-controller="Account" asp-action="Logout" method="post">
@@ -17,3 +90,29 @@
     </li>
 }
 </ul>
+
+@functions {
+    private static string BuildDisplayName(string? firstName, string? lastName, string fallback)
+    {
+        var fullName = $"{firstName} {lastName}".Trim();
+        return string.IsNullOrWhiteSpace(fullName) ? fallback : fullName;
+    }
+
+    private static string BuildInitials(string displayName, string fallback)
+    {
+        var source = string.IsNullOrWhiteSpace(displayName) ? fallback : displayName;
+        var parts = source
+            .Replace("@", " ")
+            .Replace(".", " ")
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        if (parts.Length >= 2)
+        {
+            return $"{parts[0][0]}{parts[1][0]}".ToUpperInvariant();
+        }
+
+        return source.Length >= 2
+            ? source[..2].ToUpperInvariant()
+            : source.ToUpperInvariant();
+    }
+}

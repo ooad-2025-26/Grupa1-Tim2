@@ -31,6 +31,20 @@
         }
     </section>
 
+    @if (Model.Any())
+    {
+        <section class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <label for="oglasPretraga" class="form-label fw-semibold mb-2">Pretraga oglasa</label>
+                <input type="search"
+                       id="oglasPretraga"
+                       class="form-control"
+                       placeholder="Pretrazite po nazivu oglasa ili nazivu firme..."
+                       autocomplete="off" />
+            </div>
+        </section>
+    }
+
     @if (!Model.Any())
     {
         <section class="card border-0 shadow-sm">
@@ -42,7 +56,7 @@
     }
     else
     {
-        <div class="d-grid gap-3">
+        <div class="d-grid gap-3" id="oglasiLista">
             @foreach (var oglas in Model)
             {
                 var isApplied = appliedOglasIds.Contains(oglas.Id);
@@ -50,8 +64,10 @@
                 var tehnologije = (oglas.Tehnologije ?? string.Empty)
                     .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
                 var statusClass = isActive ? "text-bg-success" : "text-bg-secondary";
+                var firmaNaziv = oglas.Firma?.Naziv ?? "Firma";
+                var searchText = $"{oglas.Naslov} {firmaNaziv}".ToLowerInvariant();
 
-                <article class="card border-0 shadow-sm">
+                <article class="card border-0 shadow-sm oglas-item" data-search-text="@searchText">
                     <div class="card-body p-4">
                         <div class="d-flex flex-column flex-lg-row justify-content-between gap-3">
                             <div class="flex-grow-1">
@@ -65,7 +81,7 @@
                                 </div>
 
                                 <div class="text-muted mb-3">
-                                    @(oglas.Firma?.Naziv ?? "Firma") - @oglas.Lokacija
+                                    @firmaNaziv - @oglas.Lokacija
                                 </div>
 
                                 <p class="mb-3">@oglas.Opis</p>
@@ -149,5 +165,45 @@
                 </article>
             }
         </div>
+
+        <section id="oglasPretragaPrazno" class="card border-0 shadow-sm d-none">
+            <div class="card-body p-5 text-center">
+                <h2 class="h5 fw-bold">Nema rezultata pretrage</h2>
+                <p class="text-muted mb-0">Pokusajte promijeniti pojam pretrage ili ocistite polje za pretragu.</p>
+            </div>
+        </section>
     }
 </div>
+
+@section Scripts {
+    <script>
+        (function () {
+            var searchInput = document.getElementById('oglasPretraga');
+            if (!searchInput) {
+                return;
+            }
+
+            var items = Array.from(document.querySelectorAll('.oglas-item'));
+            var emptyState = document.getElementById('oglasPretragaPrazno');
+
+            searchInput.addEventListener('input', function () {
+                var query = searchInput.value.trim().toLowerCase();
+                var visibleCount = 0;
+
+                items.forEach(function (item) {
+                    var searchText = item.getAttribute('data-search-text') || '';
+                    var matches = query.length === 0 || searchText.indexOf(query) !== -1;
+                    item.classList.toggle('d-none', !matches);
+
+                    if (matches) {
+                        visibleCount++;
+                    }
+                });
+
+                if (emptyState) {
+                    emptyState.classList.toggle('d-none', query.length === 0 || visibleCount > 0);
+                }
+            });
+        })();
+    </script>
+}
